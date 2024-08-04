@@ -1,15 +1,18 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class MainManager : MonoBehaviour
 {
     public Brick BrickPrefab;
     public int LineCount = 6;
     public Rigidbody Ball;
-
+    public Text BestScoreText;
     public Text ScoreText;
     public GameObject GameOverText;
     
@@ -18,10 +21,16 @@ public class MainManager : MonoBehaviour
     
     private bool m_GameOver = false;
 
-    
+    private void Awake()
+    {
+        
+    }
+
     // Start is called before the first frame update
     void Start()
     {
+        GameManager.Instance.LoadGameInfo();
+        GameManager.Instance.UpdateHighScoreUI();
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
         
@@ -55,6 +64,7 @@ public class MainManager : MonoBehaviour
         }
         else if (m_GameOver)
         {
+            GameManager.Instance.LoadGameInfo();
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
@@ -72,5 +82,7 @@ public class MainManager : MonoBehaviour
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
+        GameManager.Instance.SetBestScore(m_Points);
+        GameManager.Instance.UpdateHighScoreUI();
     }
 }
